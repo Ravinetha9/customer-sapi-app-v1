@@ -1,0 +1,34 @@
+#%RAML 1.0
+title: customer-sapi-raml
+description: This RAML file contains resourses for customer XPAPI . 
+
+uses:
+  common-library: /exchange_modules/ee41700d-e5d2-4386-9c68-59bad539d33c/common-fragment-customeronboarding/1.0.3/common-fragment-customeronboarding.raml
+
+  
+/customers:
+  description: This API will register customer on Vio APP. This API will help to Automate onboarding process. 
+  post:
+    is:
+      - common-library.common-header
+      - common-library.accept-header
+      - common-library.error-response
+    
+    body:
+      application/json:
+        type: common-library.registration
+
+    responses:
+          201:
+            body:
+              application/json:
+                type: object
+                properties:
+                  customersResponse:
+                    type: common-library.sucess-response
+          
+
+
+                    
+    
+    
