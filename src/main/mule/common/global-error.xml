@@ -5,89 +5,159 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<error-handler name="ErrorError_Handler-Appl" doc:id="4abc551a-bf67-4471-96c7-ff7446443268" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e1518436-3294-4577-9c9f-fa9f826cc5bc" type="SALESFORCE:COMMUNICATION,SALESFORCE:CONNECTIVITY,SALESFORCE:INSUFFICIENT_PERMISSIONS,SALESFORCE:INVALID_INPUT,SALESFORCE:INVALID_RESPONSE,SALESFORCE:LIMIT_EXCEEDED,SALESFORCE:MUTUAL_AUTHENTICATION_FAILED,SALESFORCE:NOT_FOUND,SALESFORCE:OPERATION_NOT_SUPPORTED,SALESFORCE:RETRY_EXHAUSTED,SALESFORCE:TIMEOUT,SALESFORCE:UNAVAILABLE">
+			<logger level="INFO" doc:name="Error Logger" doc:id="ea570741-2476-46bd-a477-2bc21756fad0" message="#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: (now() &gt;&gt; &quot;UTC&quot;)[0 to 18], 	&#10;    transactionId: vars.headers.'x-vio-transactionId', 	&#10;    AppName: app.name, 	&#10;    FlowName: flow.name, 	&#10;    BusinessProcessName:  &quot;Customer Registration&quot;, 	&#10;    Category:  &quot;Customer&quot;, 	&#10;    OriginatingApplication:  &quot;Process API&quot;, 	&#10;    DesinationApplication:  &quot;Salesforce&quot;, 	&#10;    CustomerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Error&quot; &#10;}]" />
+			<ee:transform doc:name="Transform Message" doc:id="c6624e20-21e9-4d9a-9b46-b88e810c4e64" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 500,
+  "eventId": vars.headers.'x-vio-transactionId',
+  "error": {
+    "type": error.errorType,
+    "title": "Salesforce Error",
+    "details": error.description
+  }
+}
+]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0b86fde3-2077-4663-943a-50333554ec52" type="ANY">
+			<logger level="INFO" doc:name="Error Logger" doc:id="304c360f-f253-47fa-bc38-c59453821f02" message="#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: (now() &gt;&gt; &quot;UTC&quot;)[0 to 18], 	&#10;    transactionId: vars.headers.'x-vio-transactionId', 	&#10;    AppName: app.name, 	&#10;    FlowName: flow.name, 	&#10;    BusinessProcessName:  &quot;Customer Registration&quot;, 	&#10;    Category:  &quot;Customer&quot;, 	&#10;    OriginatingApplication:  &quot;Process API&quot;, 	&#10;    DesinationApplication:  &quot;Salesforce&quot;, 	&#10;    CustomerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Error&quot; &#10;}]"/>
+			<ee:transform doc:name="Transform Message" doc:id="417645e5-2a2f-4d02-b2aa-69a8e735946e" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 500,
+  "eventId": vars.headers.'x-vio-transactionId',
+  "error": {
+    "type": error.errorType,
+    "title": "Critical Error",
+    "details": error.description
+  }
+}
+]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
 	<error-handler name="Error_Handler_ApiKit">
             <on-error-propagate type="APIKIT:BAD_REQUEST">
-                <ee:transform>
+                <logger level="INFO" doc:name="Error Logger" doc:id="13fc9440-0e4f-47a1-b979-ba20e4c4c689" message="#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: (now() &gt;&gt; &quot;UTC&quot;)[0 to 18], 	&#10;    transactionId: vars.headers.'x-vio-transactionId', 	&#10;    AppName: app.name, 	&#10;    FlowName: flow.name, 	&#10;    BusinessProcessName:  &quot;Customer Registration&quot;, 	&#10;    Category:  &quot;Customer&quot;, 	&#10;    OriginatingApplication:  &quot;Process API&quot;, 	&#10;    DesinationApplication:  &quot;Salesforce&quot;, 	&#10;    CustomerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Error&quot; &#10;}]" />
+			<ee:transform>
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{message: "Bad request"}]]></ee:set-payload>
+{
+  "msg": "failed operation",
+  "code": 400,
+  "eventId": vars.headers.'x-vio-transactionId',
+  "error": {
+    "type": "BAD_REQUEST",
+    "title": "Invalid Request",
+    "details": "The input contains invalid data"
+  }
+}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
-            </on-error-propagate>
+            
+</on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform>
+                <logger level="INFO" doc:name="Error Logger" doc:id="bc44352c-55f8-4f8e-8e0c-34f05eeefadd" message="#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: (now() &gt;&gt; &quot;UTC&quot;)[0 to 18], 	&#10;    transactionId: vars.headers.'x-vio-transactionId', 	&#10;    AppName: app.name, 	&#10;    FlowName: flow.name, 	&#10;    BusinessProcessName:  &quot;Customer Registration&quot;, 	&#10;    Category:  &quot;Customer&quot;, 	&#10;    OriginatingApplication:  &quot;Process API&quot;, 	&#10;    DesinationApplication:  &quot;Salesforce&quot;, 	&#10;    CustomerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Error&quot; &#10;}]" />
+			<ee:transform>
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{message: "Resource not found"}]]></ee:set-payload>
+{
+  "msg": "failed operation",
+  "code": 401,
+  "eventId": vars.headers.'x-vio-transactionId',
+  "error": {
+    "type": "NOT_FOUND",
+    "title": "Resource not found",
+    "details": "The URI requested is invalid or the resource requested does not exists"
+  }
+}
+]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
-            </on-error-propagate>
+            
+</on-error-propagate>
             <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
-                <ee:transform>
+                <logger level="INFO" doc:name="Error Logger" doc:id="e9e6ac26-bbed-4e6d-80a8-4bfcd65319d5" message="#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: (now() &gt;&gt; &quot;UTC&quot;)[0 to 18], 	&#10;    transactionId: vars.headers.'x-vio-transactionId', 	&#10;    AppName: app.name, 	&#10;    FlowName: flow.name, 	&#10;    BusinessProcessName:  &quot;Customer Registration&quot;, 	&#10;    Category:  &quot;Customer&quot;, 	&#10;    OriginatingApplication:  &quot;Process API&quot;, 	&#10;    DesinationApplication:  &quot;Salesforce&quot;, 	&#10;    CustomerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Error&quot; &#10;}]" />
+			<ee:transform>
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{message: "Method not allowed"}]]></ee:set-payload>
+{
+  "msg": "failed operation",
+  "code": 404,
+  "eventId": vars.headers.'x-vio-transactionId',
+  "error": {
+    "type": "METHOD_NOT_ALLOWED",
+    "title": "Method not allowed",
+    "details": "The URI requested is invalid or the resource requested does not exists"
+  }
+}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[405]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
-                <ee:transform>
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Not acceptable"}]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
+            
+</on-error-propagate>
             <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
-                <ee:transform>
+                <logger level="INFO" doc:name="Error Logger" doc:id="6259deaf-48ec-4142-bd98-91f66b1f5cbb" message="#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: (now() &gt;&gt; &quot;UTC&quot;)[0 to 18], 	&#10;    transactionId: vars.headers.'x-vio-transactionId', 	&#10;    AppName: app.name, 	&#10;    FlowName: flow.name, 	&#10;    BusinessProcessName:  &quot;Customer Registration&quot;, 	&#10;    Category:  &quot;Customer&quot;, 	&#10;    OriginatingApplication:  &quot;Process API&quot;, 	&#10;    DesinationApplication:  &quot;Salesforce&quot;, 	&#10;    CustomerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Error&quot; &#10;}]" />
+			<ee:transform>
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{message: "Unsupported media type"}]]></ee:set-payload>
+{
+  "msg": "failed operation",
+  "code": 415,
+  "eventId": vars.headers.'x-vio-transactionId',
+  "error": {
+    "type": "UNSUPPORTED-MEDIA-TYPE",
+    "title": "Unsupported media type",
+    "details": "The URI requested is invalid or the resource requested does not exists"
+  }
+}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
-                <ee:transform>
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Not Implemented"}]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
+            
+</on-error-propagate>
         </error-handler>
 	
 	
 	
 	
 	
-	</mule>
+	
+</mule>

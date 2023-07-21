@@ -3,3 +3,9 @@ http:
     host: "0.0.0.0"
     port: "8082"
     readtimeout: "30000"
+  
+sfdc:
+  username: "ravinetha4912@gmail.com"
+  password: "RaviChinna@9"
+  securityToken: "id3cmMWqc4eXTDiWZxTZRC6U"
+  

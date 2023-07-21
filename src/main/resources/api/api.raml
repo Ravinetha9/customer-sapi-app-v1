@@ -26,7 +26,19 @@ uses:
                 properties:
                   customersResponse:
                     type: common-library.sucess-response
-          
+/ping:
+  get:
+    description: This API will check health of the application. Application is up and running or not.
+    is:
+      - common-library.common-header
+      - common-library.error-response
+    responses:
+      200:
+        body:
+          application/json:
+            type: common-library.sucess-response
+            example: !include examples/success-response-example.json
+                      
 
 
                     
