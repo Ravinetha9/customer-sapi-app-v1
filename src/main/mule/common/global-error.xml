@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<error-handler name="ErrorError_Handler-Appl" doc:id="4abc551a-bf67-4471-96c7-ff7446443268" >
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e1518436-3294-4577-9c9f-fa9f826cc5bc" type="SALESFORCE:COMMUNICATION,SALESFORCE:CONNECTIVITY,SALESFORCE:INSUFFICIENT_PERMISSIONS,SALESFORCE:INVALID_INPUT,SALESFORCE:INVALID_RESPONSE,SALESFORCE:LIMIT_EXCEEDED,SALESFORCE:MUTUAL_AUTHENTICATION_FAILED,SALESFORCE:NOT_FOUND,SALESFORCE:OPERATION_NOT_SUPPORTED,SALESFORCE:RETRY_EXHAUSTED,SALESFORCE:TIMEOUT,SALESFORCE:UNAVAILABLE">
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e1518436-3294-4577-9c9f-fa9f826cc5bc" type="SALESFORCE:CONNECTIVITY, SALESFORCE:INVALID_INPUT, SALESFORCE:INVALID_RESPONSE, SALESFORCE:LIMIT_EXCEEDED, SALESFORCE:MUTUAL_AUTHENTICATION_FAILED, SALESFORCE:NOT_FOUND, SALESFORCE:RETRY_EXHAUSTED, SALESFORCE:TIMEOUT">
 			<logger level="INFO" doc:name="Error Logger" doc:id="ea570741-2476-46bd-a477-2bc21756fad0" message="#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: (now() &gt;&gt; &quot;UTC&quot;)[0 to 18], 	&#10;    transactionId: vars.headers.'x-vio-transactionId', 	&#10;    AppName: app.name, 	&#10;    FlowName: flow.name, 	&#10;    BusinessProcessName:  &quot;Customer Registration&quot;, 	&#10;    Category:  &quot;Customer&quot;, 	&#10;    OriginatingApplication:  &quot;Process API&quot;, 	&#10;    DesinationApplication:  &quot;Salesforce&quot;, 	&#10;    CustomerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Error&quot; &#10;}]" />
 			<ee:transform doc:name="Transform Message" doc:id="c6624e20-21e9-4d9a-9b46-b88e810c4e64" >
 				<ee:message >
