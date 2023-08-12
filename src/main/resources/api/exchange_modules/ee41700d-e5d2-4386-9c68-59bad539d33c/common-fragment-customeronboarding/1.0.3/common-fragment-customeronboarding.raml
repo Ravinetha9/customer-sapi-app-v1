@@ -1,0 +1,12 @@
+#%RAML 1.0 Library
+usage:
+traits:
+  error-response: !include traits/error-response-trait.raml 
+  accept-header: !include traits/accept-header-trait.raml
+  authorization-header: !include traits/authorization-header-trait.raml
+  common-header: !include traits/common-header-trait.raml
+
+types:
+  contact: !include dataTypes/contact-dataType.raml
+  registration: !include dataTypes/registration-dataType-trait.raml
+  sucess-response: !include dataTypes/success-response-dataType.raml

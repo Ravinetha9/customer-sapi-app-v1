@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="customer-registration-implSub_Flow" doc:id="5d942914-a920-4293-80e5-638192c4c7ee" >
+		<logger level="INFO" doc:name="Request SFDC Logger" doc:id="597acaa8-c43d-4257-92b9-115a390cd6c0" message="#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: (now() &gt;&gt; &quot;UTC&quot;)[0 to 18], 	&#10;    transactionId: vars.requestData.headers.'x-vio-transactionid', 	&#10;    AppName: app.name, 	&#10;    FlowName: flow.name, 	&#10;    BusinessProcessName:  &quot;Customer Registration&quot;, 	&#10;    Category:  &quot;Customer&quot;, 	&#10;    OriginatingApplication:  &quot;Process API&quot;, 	&#10;    DesinationApplication:  &quot;Salesforce&quot;, 	&#10;    CustomerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;SFDC Request&quot; &#10;}]"/>
+		<salesforce:create doc:name="Create" doc:id="0d3d0dee-2f47-4312-93f5-d3fd2f28f647" config-ref="Salesforce_Config" type="CustomerONB__c">
+			<salesforce:records ><![CDATA[#[[{
+	Name:  vars.requestData.payload.contact.firstName,
+	acceptDataPolicy__c: vars.requestData.payload.contact.acceptDataPolicy,
+	acceptPIC__c: vars.requestData.payload.contact.acceptPIC,
+	captchatoken__c: vars.requestData.payload.contact.captchatoken,			
+	confirmPassword__c: vars.requestData.payload.contact.confirmPassword,		
+	countryCode__c: vars.requestData.payload.contact.countryCode,							
+	email__c: vars.requestData.payload.contact.email,			
+	firstName__c: vars.requestData.payload.contact.firstName,							
+	lastName__c: vars.requestData.payload.contact.lastName,			
+	locale__c: vars.requestData.payload.contact.locale,				
+	mobile__c: vars.requestData.payload.contact.mobile,
+	password__c: vars.requestData.payload.contact.password,			
+	recieveClaimsettle__c: vars.requestData.payload.contact.recieveClaimsettle,				
+	recieveNews__c: vars.requestData.payload.contact.recieveNews
+}]]]]></salesforce:records>
+		</salesforce:create>
+		<logger level="INFO" doc:name="Response SFDC Logger" doc:id="82ea472f-904f-4dd2-8061-48545d199e5f" message="#[%dw 2.0&#10;output application/json indent = false  &#10;---  &#10;{  	&#10;    TimeStamp: (now() &gt;&gt; &quot;UTC&quot;)[0 to 18], 	&#10;    transactionId: vars.requestData.headers.'x-vio-transactionid', 	&#10;    AppName: app.name, 	&#10;    FlowName: flow.name, 	&#10;    BusinessProcessName:  &quot;Customer Registration&quot;, 	&#10;    Category:  &quot;Customer&quot;, 	&#10;    OriginatingApplication:  &quot;Process API&quot;, 	&#10;    DesinationApplication:  &quot;Salesforce&quot;, 	&#10;    CustomerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;SFDC Response&quot; &#10;}]"/>
+		<ee:transform doc:name="Transform Message" doc:id="b816b8fd-4165-4e24-91a3-4bc92fbc1dd2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[output application/json
+---
+{
+  "eventInstanceId": vars.requestData.headers.'x-vio-transactionid',
+  "status": "success"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>
